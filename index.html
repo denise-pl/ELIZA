@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>ELIZA</title>
+
+  <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+  <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+  <link rel="stylesheet" href="./web/style.css" />
+</head>
+
+<body>
+  <py-config src="./web/config.toml"></py-config>
+  <py-script src="./web/web.py"></py-script>
+
+  <h4><small>Based on "ELIZA - A Computer Program For the Study of
+      Natural Language Communication Between Man And Machine"
+      (<a href="http://web.stanford.edu/class/cs124/p36-weizenabaum.pdf"
+        target="_blank">http://web.stanford.edu/class/cs124/p36-weizenabaum.pdf</a>)</small></h4>
+
+
+  <div class="monospace" id="chat-window"></div>
+  <label class="monospace" for="user-input">You:</label>
+  <input class="monospace" id="user-input" autofocus></input>
+  <button class="monospace" id="btn-send">send</button>
+  <button class="monospace" id="btn-restart">restart</button>
+  <button class="monospace" id="btn-demo">demo</button>
+
+  <hr />
+  <p>
+    <small>
+      <input type="radio" id="output-level-critical" name="output-level" value="CRITICAL" checked>
+      <label for="output-level-critical">Show Answer</label><br>
+      <input type="radio" id="output-level-info" name="output-level" value="INFO">
+      <label for="output-level-info">Show Answer + INFO</label><br>
+      <input type="radio" id="output-level-debug" name="output-level" value="DEBUG">
+      <label for="output-level-debug">Show Answer + INFO + DEBUG</label><br>
+    </small>
+  </p>
+  <hr />
+  <small>
+    <p>Privacy: This page doesn't use cookies. No data is send to the server.
+      THIS CONVERSATION IS PRIVATE TO YOU.
+      Your messages are processed by ELIZA script working IN YOUR BROWSER, ON YOUR COMPUTER.</p>
+    <footer>Copyright (C) 2017-2023 Szymon Jessa</footer>
+  </small>
+</body>
+
+</html>

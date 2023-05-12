@@ -4,11 +4,11 @@ Files used for Natural Language Processing Workshop inspired by Joseph's Weizenb
 
 # Feedback & ideas
 
-szymon [ at ] denise [ dot ] pl
+szymon [dot] denise [ at ] gmail [ dot ] com
 
 # License
 
-Copyright (c) 2017-2022, Szymon Jessa
+Copyright (c) 2017-2023, Szymon Jessa
 
 All rights reserved.
 

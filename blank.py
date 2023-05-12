@@ -1,6 +1,6 @@
 """Template for creating custom ELIZA scripts
 
-Copyright (c) 2017-2022, Szymon Jessa
+Copyright (c) 2017-2023, Szymon Jessa
 All rights reserved.
 
 This source code is licensed under the BSD-style license found in the
