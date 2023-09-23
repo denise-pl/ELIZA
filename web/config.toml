@@ -1,3 +1,0 @@
-[[fetch]]
-from = "./"
-files = ["eliza.py", "eliza_demo.py", "chat.py"]

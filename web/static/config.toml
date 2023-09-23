@@ -1,0 +1,3 @@
+[[fetch]]
+from = "./"
+files = ["eliza/base_eliza.py", "eliza/identities/eliza.py", "eliza/identities/eliza_demo.py"]

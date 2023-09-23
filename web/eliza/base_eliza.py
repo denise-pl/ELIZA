@@ -7,12 +7,31 @@ This source code is licensed under the BSD-style license found in the
 LICENSE file in the root directory of this source tree.
 """
 
+import os
 import logging
+import importlib.util
+from importlib import import_module
 
-USERNAME = "You"
+DEFAULT_IDENTITIES_PATH = "web.eliza.identities"
 
+def load_default_identity(identity_name):
+    module_path = f"{DEFAULT_IDENTITIES_PATH}.{identity_name}"
+    try:
+        identity_module = import_module(module_path)
+    except ModuleNotFoundError:
+        logging.critical(f"Failed to load a default identity: {identity_name}.\n" \
+                         "If you are trying to load a custom identity, provide full path to the file including the .py extension.\n")
+        raise
 
-class GroupChat:
+    return identity_module
+
+def load_identity_from_path(identity_path):
+    spec = importlib.util.spec_from_file_location('custom_module', identity_path)
+    custom_identity = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(custom_identity)
+    return custom_identity
+
+class MultiAgentSession:
     """Allows interaction between multiple agents in a loop:
     - first agent gets empty ("") message
     - each agent response is passed as input message to next agent
@@ -35,20 +54,3 @@ class GroupChat:
         self._activeAgent = (self._activeAgent + 1) % len(self._agents)
 
         return result
-
-
-def chat(agent):
-    """Allows user interaction with a single chatbot (agent) in a loop:
-    - start session with empty ("") message sent to the agent
-    - read user message from console
-    - get agent's response
-    - write agent's response to console
-    - exit if user presses enter without any input (message length is 0)
-    """
-
-    print("\n<press enter with no message to exit>")
-    print(f"{agent.name()}: {agent('')}")
-    msg = input(f"{USERNAME}: ")
-    while msg:
-        print(f"{agent.name()}: {agent(msg)}")
-        msg = input(f"{USERNAME}: ")
