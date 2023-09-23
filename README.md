@@ -26,12 +26,17 @@ python web_client.py
 
 It is possible to create custom chatbots and make them talk to each other in a multi-agent chat (the code below will create 5 agents, of which three are using default 'eliza' identity and two are custom, user defined identities):
 ```
-python web_client.py eliza ./my_custom_chatbot.py ./my_second_custom_chatbot.py eliza eliza
+python console_client.py eliza ./my_custom_chatbot.py ./my_second_custom_chatbot.py eliza eliza
 ```
 
 To create a custom identity, based on the ELIZA algorithm, you may use the [identity_template_eliza.py](identity_template_eliza.py) file.
 
 To create a custom identity, based on a different algorithm, you may use the [identity_template.py](identity_template.py) file.
+
+To chat with the custom identity, just pass the path to it as argument:
+```
+python console_client.py ./my_custom_chatbot.py
+```
 
 # Feedback & ideas
 
