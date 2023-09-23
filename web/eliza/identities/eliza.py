@@ -1,4 +1,4 @@
-"""Python implementation of Joseph's Weizenbaum ELIZA used during Workshop
+"""Python implementation of Joseph's Weizenbaum ELIZA
 
 Copyright (c) 2017-2023, Szymon Jessa
 All rights reserved.

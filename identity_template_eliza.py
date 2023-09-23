@@ -8,10 +8,12 @@ LICENSE file in the root directory of this source tree.
 """
 import doctest
 
-from eliza import KEYWORD_START, KEYWORD_NONE
-from eliza import Chatbot
+from web.eliza.identities.eliza import KEYWORD_START, KEYWORD_NONE
+from web.eliza.identities.eliza import Chatbot
 
 DEFAULT_NAME = "blank"
+"""Agent's default name
+"""
 
 script = dict()
 
