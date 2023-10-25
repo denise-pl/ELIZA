@@ -235,6 +235,8 @@ script["HELLO"] = {
     "rules": [{"reassembly": ["How do you do. Please state your problem"]}]
 }
 
+script["HI"] = {"rules": [{"reassembly": ["=HELLO"]}]}
+
 script["COMPUTER"] = {
     "rank": 50,
     "rules": [
@@ -570,7 +572,7 @@ script["MY"] = {
     "rules": [
         {
             # user input:           my    (wife|mother|sister)
-            "decomposition": rf".*\byour ({tags['/FAMILY']}) (.*)$",
+            "decomposition": rf"^.*\byour ({tags['/FAMILY']}) (.*)$",
             "reassembly": [
                 "Tell me more about your family",
                 r"Who else if your family \2",
@@ -793,27 +795,7 @@ class Chatbot:
 
         logging.info("Message: '%s'", msg)
 
-        # TEXT SEGMENTATION
-        # Only single phrases or sentences are used for transformation
-        all_sentences = self._get_sentences(msg)
-        logging.info(
-            "\tText segmentation: %s", ", ".join([f"'{s}'" for s in all_sentences])
-        )
-
-        for sentence in all_sentences:
-            logging.info("\tProcessing sentence: '%s'", sentence)
-
-            # TOKENIZATION
-            tokens = list(self._get_tokens(sentence))
-            logging.info("\tTokens: %s", ", ".join([f"'{t}'" for t in tokens]))
-
-            # KEYWORDS DETECTION (FEATURE EXTRACTION, INTENT CLASSIFICATION)
-            keystack, altered_sentence = self._scan_sentence(tokens)
-
-            # if at least one keyword has been found in current sentence
-            # accept it as the keystack and ignore the remaining sentences
-            if keystack:
-                break
+        keystack, altered_sentence = self._process_input(msg)
 
         # NATURAL LANGUAGE GENERATION
         # try to generate response given the keystack
@@ -833,6 +815,32 @@ class Chatbot:
 
         return str(resp)
 
+    def _process_input(self, msg):
+        # TEXT SEGMENTATION
+        # Only single phrases or sentences are used for transformation
+        all_sentences = self._get_sentences(msg)
+        logging.info(
+            "\tText segmentation: %s", ", ".join([f"'{s}'" for s in all_sentences])
+        )
+
+        keystack, altered_sentence = None, None
+        for sentence in all_sentences:
+            logging.info("\tProcessing sentence: '%s'", sentence)
+
+            # TOKENIZATION
+            tokens = list(self._get_tokens(sentence))
+            logging.info("\tTokens: %s", ", ".join([f"'{t}'" for t in tokens]))
+
+            # KEYWORDS DETECTION (FEATURE EXTRACTION, INTENT CLASSIFICATION)
+            keystack, altered_sentence = self._scan_sentence(tokens)
+
+            # if at least one keyword has been found in current sentence
+            # accept it as the keystack and ignore the remaining sentences
+            if keystack:
+                break
+
+        return keystack, altered_sentence
+
     def _scan_sentence(self, tokens):
         """Scan sentence left to right looking for keywords.
         If script defines a substitution it is performed here.
@@ -849,11 +857,12 @@ class Chatbot:
                 continue
 
             if "=" in self._script[key]:
-                altered_tokens.append(self._script[key]["="])
+                token_repl = self._script[key]["="]
+                altered_tokens.append(token_repl)
                 logging.debug(
                     "\t\tSubstitution: '%s' => '%s' " "(altered sentence: '%s')",
                     token,
-                    self._script[key]["="],
+                    token_repl,
                     " ".join(altered_tokens),
                 )
             else:
