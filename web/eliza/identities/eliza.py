@@ -407,7 +407,7 @@ script["I"] = {
         },
         {
             # user input:           I   am       (sad|unhappy|depressed|sick)
-            "decomposition": r"^.*\byou are (.*) (sad|unhappy|depressed|sick) (.*)$",
+            "decomposition": r"^.*\byou are (.*)\b(sad|unhappy|depressed|sick)\b(.*)$",
             "reassembly": [
                 r"I am sorry to hear you are \2",
                 r"Do you think coming here will help you not to be \2",
@@ -441,7 +441,7 @@ script["I"] = {
         },
         {
             # user input:           I         feel|think|believe|wish  I
-            "decomposition": rf".*\byou (.*) ({tags['/BELIEF']}) (.*) you (.*)$",
+            "decomposition": rf".*\byou (.*)\b({tags['/BELIEF']}) (.*)\byou\b(.*)$",
             "reassembly": ["=YOU"],
         },
         {
@@ -572,10 +572,10 @@ script["MY"] = {
     "rules": [
         {
             # user input:           my    (wife|mother|sister)
-            "decomposition": rf"^.*\byour ({tags['/FAMILY']}) (.*)$",
+            "decomposition": rf"^.*\byour ({tags['/FAMILY']}).?\b(.*)$",
             "reassembly": [
                 "Tell me more about your family",
-                r"Who else if your family \2",
+                r"Who else in your family \2",
                 r"Your \1",
                 r"What else comes to mind when you think of your \1",
             ],
@@ -596,10 +596,10 @@ script["MY"] = {
             # user input:           my   brother|dog|application|future|life|job|...
             "decomposition": r"^.*\byour (.*)$",
             "reassembly": [
-                r"Lets discuss further why your \1",
-                r"Earlier you said your \1",
-                r"But your \1",
                 r"Does that have anything to do with the fact that your \1",
+                r"But your \1",
+                r"Earlier you said your \1",
+                r"Lets discuss further why your \1",
             ],
         }
     ],
@@ -693,7 +693,7 @@ script["EVERYONE"] = {
     "rules": [
         {
             # user input:           (everyone|everybody|nobody|noone)
-            "decomposition": r"^.*\b(everyone|everybody|nobody|noone) (.*)$",
+            "decomposition": r"^.*\b(everyone|everybody|nobody|noone)\b(.*)$",
             "reassembly": [
                 r"Really, \1",
                 r"Surely not \1",
@@ -734,7 +734,7 @@ script["LIKE"] = {
     "rules": [
         {
             # user input:           (am|is|are|was)      like
-            "decomposition": r"^.*\b(am|is|are|was) (.*) like (.*)$",
+            "decomposition": r"^.*\b(am|is|are|was) (.*)\blike (.*)$",
             "reassembly": ["=DIT"],
         },
         {"reassembly": ["NEWKEY"]},
@@ -1120,7 +1120,7 @@ def example(length):
     >>> agent("you remind me of a family member")
     'In what way'
     >>> agent("hmm")
-    'Lets discuss further why your children have fun talking to chatbots'
+    'Does that have anything to do with the fact that your children have fun talking to chatbots'
     """
     messages = [
         "hello Eliza, nice to meet you. how are you?",
@@ -1146,6 +1146,67 @@ def example(length):
         yield f"{agent.name()}: {agent(msg)}"
         yield ""
 
+def classic_example(length):
+    """Example conversation from the original paper, for script validation and debugging
+
+    >>> agent = Chatbot()
+    >>> agent("")
+    'How do you do. Please tell me your problem'
+    >>> agent("Men are all alike")
+    'In what way'
+    >>> agent("They're always bugging us about something or other")
+    'Can you think of a specific example'
+    >>> agent("Well my boyfriend made me come here")
+    'Your boyfriend made you come here'
+    >>> agent("He says I'm depressed much of the time")
+    'I am sorry to hear you are depressed'
+    >>> agent("It's true. I'm unhappy.")
+    'Do you think coming here will help you not to be unhappy'
+    >>> agent("I need some help, that much seems certain")
+    'What would it mean to you if you got some help'
+    >>> agent("Perhaps I could learn to get along with my mother")
+    'Tell me more about your family'
+    >>> agent("My mother takes care of me")
+    'Who else in your family takes care of you'
+    >>> agent("My father")
+    'Your father'
+    >>> agent("You are like my father in some way")
+    'What resemblance do you see'
+    >>> agent("You are not very aggressive but I think you don't want me to notice that")
+    "What makes you think I am not very aggressive but you think I don't want you to notice that"
+    >>> agent("You don't argue with me")
+    "Why do you think I don't argue with you"
+    >>> agent("You are afraid of me")
+    'Does it please you to believe I am afraid of you'
+    >>> agent("My father is afraid of everybody")
+    'What else comes to mind when you think of your father'
+    >>> agent("Bullies")
+    'Does that have anything to do with the fact that your boyfriend made you come here'
+    """
+    messages = [
+        "Men are all alike",
+        "They're always bugging us about something or other",
+        "Well my boyfriend made me come here",
+        "He says I'm depressed much of the time",
+        "It's true. I'm unhappy.",
+        "I need some help, that much seems certain",
+        "Perhaps I could learn to get along with my mother",
+        "My mother takes care of me",
+        "My father",
+        "You are like my father in some way",
+        "You are not very aggressive but I think you don't want me to notice that",
+        "You don't argue with me",
+        "You are afraid of me",
+        "My father is afraid of everybody",
+        "Bullies"
+    ]
+
+    agent = Chatbot()
+    for idx, msg in enumerate(messages[:length], 1):
+        yield f"****** Round #{idx} ******"
+        yield f"You: {msg}"
+        yield f"{agent.name()}: {agent(msg)}"
+        yield ""
 
 if __name__ == "__main__":
     doctest.testmod(verbose=False)  # try verbose=True for more output
